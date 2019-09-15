@@ -1,0 +1,12 @@
+\documentclass{article}
+\usepackage{pgfplots}
+\usepackage{filecontents}
+
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}
+\addplot table [x=\coordindex, y=acc, col sep=comma] {results_malignantLabels.csv};
+\end{axis}
+\end{tikzpicture}
+\end{document}
