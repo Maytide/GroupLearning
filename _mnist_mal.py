@@ -67,9 +67,8 @@ def test(model, test_loader):
     return acc
 
 
-def experiment(reshaper, num_malignant, model, num_epochs):
+def experiment(reshaper, num_malignant, model, num_epochs, batch_size):
     print(f'-- Beginning experiment with {num_malignant} malignant labels --')
-    batch_size = 128
     data_train, targets_train, data_test, targets_test = load_mnist(60000)
     corrupt_targets_train = corrupt_labels(targets_train, num_corrupt=num_malignant)
     train_dataset = MNISTDataset(data_train,
@@ -99,12 +98,12 @@ def experiment(reshaper, num_malignant, model, num_epochs):
     return test_acc
 
 
-def experiment_1d(num_malignant, model, num_epochs):
-    return experiment(Reshape(), num_malignant, model, num_epochs)
+def experiment_1d(num_malignant, model, num_epochs, batch_size):
+    return experiment(Reshaper(), num_malignant, model, num_epochs, batch_size)
 
 
-def experiment_2d(num_malignant, model, num_epochs):
-    return experiment(lambda x: x, num_malignant, model, num_epochs)
+def experiment_2d(num_malignant, model, num_epochs, batch_size):
+    return experiment(UnSqueezer(), num_malignant, model, num_epochs, batch_size)
 
 
 if __name__ == '__main__':
@@ -112,8 +111,8 @@ if __name__ == '__main__':
     if device.__str__() == 'cuda':
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
-    model = NeuralNet(784, 392, 10).to(device)
-    # model = ConvNet().to(device)
+    # model = NeuralNet(784, 392, 10).to(device)
+    model = ConvNet().to(device)
     savedir = f'graphs/{str(model)}/'
     if not os.path.exists(savedir):
         os.makedirs(savedir)
@@ -121,9 +120,9 @@ if __name__ == '__main__':
 
     test_accs = []
     for i in range(0, 10):  # 0-9 malignancies
-        model = NeuralNet(784, 392, 10).to(device)
-        # model = ConvNet().to(device)
-        test_acc = experiment_1d(i, model, 1)
+        # model = NeuralNet(784, 392, 10).to(device)
+        model = ConvNet().to(device)
+        test_acc = experiment_2d(i, model, 1, 16)
         test_accs.append(test_acc)
 
     with open(csvpath, 'w') as f:

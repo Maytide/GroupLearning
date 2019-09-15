@@ -12,7 +12,7 @@ class NeuralNet(nn.Module):
         self.fc2 = nn.Linear(hidden_size, hidden_size)
         self.fc3 = nn.Linear(hidden_size, num_classes)
         self.relu = nn.ReLU()
-        self.sigmoid = nn.Sigmoid() # "Reduce Failed to Synchronise" in F.binary_cross_entropy: normalize to [0, 1]
+        self.sigmoid = nn.Sigmoid()  # "Reduce Failed to Synchronise" in F.binary_cross_entropy: normalize to [0, 1]
 
     def forward(self, x):
         out = self.fc1(x)
@@ -45,12 +45,14 @@ class ConvNet(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))
         self.fc = nn.Linear(7 * 7 * 32, num_classes)
+        self.sigmoid = nn.Sigmoid()  # "Reduce Failed to Synchronise" in F.binary_cross_entropy: normalize to [0, 1]
 
     def forward(self, x):
         out = self.layer1(x)
         out = self.layer2(out)
         out = out.reshape(out.size(0), -1)
         out = self.fc(out)
+        out = self.sigmoid(out)
         return out
 
     def __str__(self):

@@ -8,7 +8,9 @@ import torchvision
 
 
 class MNISTDataset(torch.utils.data.Dataset):
-
+    """
+    MNIST digits
+    """
     def __init__(self, data, targets, transform=None):
         self.data = data
         self.targets = targets
@@ -29,8 +31,7 @@ class MNISTDataset(torch.utils.data.Dataset):
         return data, targets
 
 
-class Reshape(object):
-
+class Reshaper(object):
     def __init__(self):
         return
 
@@ -47,8 +48,17 @@ class Reshape(object):
         return data
 
 
-class Scale(object):
+class UnSqueezer(object):
+    def __init__(self):
+        return
 
+    def __call__(self, data):
+        data = data.unsqueeze(0)
+
+        return data
+
+
+class Scale(object):
     def __init__(self):
         return
 
